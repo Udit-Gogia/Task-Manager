@@ -17,6 +17,8 @@ module.exports = {
         primaryBrown: "#9b6c46",
         primaryYellow: "#FBE2A5",
         primaryRed: "#FB5957",
+        primaryBlue: "#6877e9",
+        secondaryBlue: "rgba(104, 119, 233,0.8)",
       },
       cursor: {
         almond: 'url("../assets/images/almond2.png"), default',

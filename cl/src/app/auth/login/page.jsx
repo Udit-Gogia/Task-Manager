@@ -14,31 +14,11 @@ const LO = Lilita_One({
   weight: "400",
 });
 
-const variants = {
-  initial: {
-    scaleY: 1,
-  },
-  animate: {
-    scaleY: 0,
-    transition: {
-      duration: 1,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-  exit: {
-    scaleY: 1,
-    transition: {
-      duration: 1,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
 export default function Login() {
   const router = useRouter();
   const [apiResMsg, setApiResMsg] = useState("");
   return (
-    <motion.main>
+    <>
       <div>
         <section className="flex h-screen ">
           <section className="bg-black basis-1/2 h-screen text-white flex justify-center items-center">
@@ -87,7 +67,7 @@ export default function Login() {
               }) => (
                 <form
                   onSubmit={handleSubmit}
-                  className="flex flex-col gap-4 bg-white p-8 shadow-custom rounded-lg"
+                  className="flex flex-col gap-8 bg-white p-8 shadow-custom rounded-lg"
                 >
                   <section className="flex flex-col gap-2">
                     <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
@@ -108,10 +88,11 @@ export default function Login() {
                         className="p-2 focus:outline-none"
                       />
                     </label>
-
-                    <p className="text-primaryRed">
-                      {errors.email && touched.email && errors.email}
-                    </p>
+                    {errors.email && (
+                      <p className="text-primaryRed">
+                        {errors.email && touched.email && errors.email}
+                      </p>
+                    )}
                   </section>
                   <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
                     <Image
@@ -170,6 +151,6 @@ export default function Login() {
         exit={{ scaleY: 0 }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       />
-    </motion.main>
+    </>
   );
 }

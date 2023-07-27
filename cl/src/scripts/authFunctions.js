@@ -56,3 +56,28 @@ export const signinUser = async (userData, setErrMessage) => {
 
   return result;
 };
+
+export async function logoutUser(setErrMessage) {
+  const token = localStorage.getItem("token");
+  const response = await fetch("/user/logout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  if (response.status === 500) {
+    setErrMessage("Failed to logout User");
+  } else {
+    setErrMessage("");
+    localStorage.removeItem("token");
+  }
+  return result;
+}
+
+export async function updateUser(userData, setApiMsg) {
+  console.log(userData);
+}
