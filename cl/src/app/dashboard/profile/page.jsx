@@ -1,14 +1,25 @@
 "use client";
-import Sidebar from "@/components/sidebar";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Formik } from "formik";
 import images from "@/assets/icons";
 import { updateUser } from "@/scripts/authFunctions";
+import Sidebar from "@/components/sidebar";
+import { getUserData, updateUserData } from "@/scripts/user";
 
 export default function Profile() {
   const [apiResMsg, setApiResMsg] = useState("");
+  const [userData, setUserData] = useState({});
+  useEffect(() => {
+    async function getData() {
+      const user = await getUserData();
+      setUserData(user);
+    }
+
+    getData();
+  }, []);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -16,7 +27,7 @@ export default function Profile() {
         animate={{ opacity: 1 }}
         exit={{ y: "10vh" }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        className="bg-primaryBackground h-screen w-screen flex overflow-hidden"
+        className="bg-primaryBackground h-screen w-screen flex overflow-y-hidden"
       >
         <Sidebar activePage={"Profile"} />
         <section className="w-full p-4 flex flex-col m-4 gap-8 ">
@@ -25,12 +36,12 @@ export default function Profile() {
           </h1>
 
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ name: "", email: "", password: "" }}
             validate={(values) => {
               const errors = {};
-              if (!values.email) {
-                errors.email = "Required";
-              } else if (
+
+              if (
+                values.email !== "" &&
                 !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
               ) {
                 errors.email = "Invalid email address";
@@ -38,7 +49,16 @@ export default function Profile() {
               return errors;
             }}
             onSubmit={async (values) => {
-              await updateUser(values, setApiResMsg);
+              const filteredValues = {};
+              Object.keys(values).filter((value) => {
+                if (values[value] !== "") {
+                  return (filteredValues[value] = values[value]);
+                }
+              });
+
+              console.log("passing userObject = ", filteredValues);
+
+              await updateUserData(filteredValues);
             }}
           >
             {({
@@ -52,66 +72,83 @@ export default function Profile() {
             }) => (
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-8 p-8 w-1/2 mx-auto rounded-lg shadow-custom  bg-white"
+                className="flex flex-col gap-8 p-8  w-1/2 mx-auto rounded-lg shadow-custom  bg-primaryBlack"
               >
-                <label className="flex px-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
+                <label className="flex items-center py-2 mx-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
-                    src={images.IconUsername}
+                    src={images.IconUserForm}
                     alt="icon-name"
-                    width={"22"}
-                    height={"22"}
+                    width={"20"}
+                    height={"20"}
+                    className="h-fit"
                   />
                   <input
                     type="text"
                     name="name"
-                    placeholder="Name"
+                    placeholder={userData?.name || "Name"}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.name}
-                    className="p-2 focus:outline-none "
+                    value={values.name || ""}
+                    className="px-2 focus:outline-none bg-primaryBlack text-primaryBackground "
                   />
                 </label>
 
-                <label className="flex px-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
+                <label
+                  className={`flex items-center mx-4 py-2 border-b-2 focus-within:border-primaryBlue transition-all duration-200 ${
+                    errors.email && "border-primaryRed "
+                  }`}
+                >
                   <Image
-                    src={images.IconEmail}
+                    src={images.IconEmailForm}
                     alt="icon-email"
-                    width={"22"}
-                    height={"22"}
+                    width={"20"}
+                    height={"20"}
+                    className="h-fit"
                   />
                   <input
                     type="email"
                     name="email"
-                    placeholder="Email"
+                    placeholder={userData?.email || "Email"}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.email}
-                    className="p-2 focus:outline-none "
+                    className="w-full px-2 focus:outline-none bg-primaryBlack text-primaryBackground  placeholder:text-base"
                   />
                 </label>
+                {errors.email && (
+                  <p className=" text-primaryRed">
+                    {errors.email && touched.email && errors.email}
+                  </p>
+                )}
 
-                <label className="flex px-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
+                <label className="flex items-center py-2 mx-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
-                    src={images.IconPassword}
+                    src={images.IconPasswordForm}
                     alt="icon-password"
-                    width={"22"}
-                    height={"22"}
+                    width={"18"}
+                    height={"18"}
+                    className="h-fit"
                   />
                   <input
                     type="password"
                     name="password"
-                    placeholder="Password"
+                    placeholder="New Password"
+                    minLength={7}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.password}
-                    className="p-2 focus:outline-none "
+                    className="w-full px-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                   />
+                  {errors.password && (
+                    <p className="ml-auto text-primaryRed">
+                      {errors.password && touched.password && errors.password}
+                    </p>
+                  )}
                 </label>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBackground transition duration-200 bg-primaryBlue rounded-lg hover:bg-secondaryBlue focus:shadow-outline focus:outline-none w-full text-xl font-semibold my-4"
+                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBlack transition duration-200 bg-primaryBackground rounded-lg hover:bg-primaryBlue focus:shadow-outline focus:outline-none w-full font-semibold my-4"
                 >
                   Update
                 </button>

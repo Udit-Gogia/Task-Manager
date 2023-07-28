@@ -21,7 +21,7 @@ export default function Login() {
     <>
       <div>
         <section className="flex h-screen ">
-          <section className="bg-black basis-1/2 h-screen text-white flex justify-center items-center">
+          <section className="bg-primaryBlack basis-2/5 h-screen text-white flex justify-center items-center">
             <motion.h1
               className={`${LO.className} text-7xl text-primaryBackground`}
               initial={{ opacity: 0 }}
@@ -32,7 +32,7 @@ export default function Login() {
             </motion.h1>
           </section>
 
-          <section className="basis-1/2 bg-primaryBackground flex flex-col gap-8 justify-center items-center">
+          <section className="basis-3/5 bg-primaryBackground flex flex-col gap-8 justify-center items-center">
             <Formik
               initialValues={{ email: "", password: "" }}
               validate={(values) => {
@@ -51,7 +51,7 @@ export default function Login() {
 
                 if (Object.keys(res).includes("err")) {
                   console.log("res includes err");
-                } else {
+                } else if (res?.token !== undefined) {
                   router.push("/dashboard");
                 }
               }}
@@ -67,15 +67,20 @@ export default function Login() {
               }) => (
                 <form
                   onSubmit={handleSubmit}
-                  className="flex flex-col gap-8 bg-white p-8 shadow-custom rounded-lg"
+                  className="flex flex-col gap-8 bg-primaryBlack p-8 px-10 shadow-custom rounded-lg"
                 >
                   <section className="flex flex-col gap-2">
-                    <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
+                    <label
+                      className={`flex items-center py-2 border-b-2 focus-within:border-primaryBlue transition-all duration-200 ${
+                        errors.email && "border-primaryRed"
+                      }`}
+                    >
                       <Image
-                        src={images.IconEmail}
+                        src={images.IconEmailForm}
                         alt="icon-email"
                         width={"20"}
-                        height={"20 "}
+                        height={"20"}
+                        className="h-fit"
                       />
                       <input
                         type="email"
@@ -85,21 +90,21 @@ export default function Login() {
                         onBlur={handleBlur}
                         required
                         value={values.email}
-                        className="p-2 focus:outline-none"
+                        className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                       />
                     </label>
                     {errors.email && (
-                      <p className="text-primaryRed">
+                      <p className=" text-primaryRed">
                         {errors.email && touched.email && errors.email}
                       </p>
                     )}
                   </section>
-                  <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
+                  <label className="flex items-center py-2 border-b-2 focus-within:border-primaryBlue transition-all duration-200">
                     <Image
-                      src={images.IconPassword}
+                      src={images.IconPasswordForm}
                       alt="icon-password"
                       width={"20"}
-                      height={"20 "}
+                      height={"20"}
                     />
                     <input
                       type="password"
@@ -109,7 +114,7 @@ export default function Login() {
                       onBlur={handleBlur}
                       required
                       value={values.password}
-                      className="p-2 focus:outline-none"
+                      className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                     />
                   </label>
                   {errors.password && (
@@ -119,7 +124,7 @@ export default function Login() {
                   )}
 
                   {apiResMsg && (
-                    <p className="text-primaryRed w-full break-all font-semibold   text-base">
+                    <p className="text-primaryRed w-full break-all font-semibold text-base">
                       {apiResMsg}
                     </p>
                   )}
@@ -127,7 +132,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-white transition duration-200 bg-black rounded-lg hover:text-primaryYellow focus:shadow-outline focus:outline-none w-full font-semibold"
+                    className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBlack transition duration-200 bg-primaryBackground rounded-lg hover:bg-primaryBlue focus:shadow-outline focus:outline-none w-full font-semibold"
                   >
                     Login
                   </button>

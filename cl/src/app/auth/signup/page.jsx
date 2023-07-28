@@ -19,8 +19,8 @@ export default function Signup() {
   const [apiResMsg, setApiResMsg] = useState("");
   return (
     <>
-      <section className="flex h-screen">
-        <section className="basis-1/2 bg-primaryBackground flex flex-col gap-8 justify-center items-center">
+      <section className="flex h-screen cursor-almonds">
+        <section className="basis-3/5 bg-primaryBackground flex flex-col gap-8 justify-center items-center">
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             validate={(values) => {
@@ -55,9 +55,9 @@ export default function Signup() {
             }) => (
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-8 bg-white p-8 shadow-custom rounded-lg "
+                className="flex flex-col gap-8 bg-primaryBlack p-8 shadow-custom rounded-lg "
               >
-                <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
+                <label className="flex rounded-md px-4 border-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
                     src={images.IconUsername}
                     alt="icon-name"
@@ -72,11 +72,15 @@ export default function Signup() {
                     onBlur={handleBlur}
                     required
                     value={values.name}
-                    className="p-2 focus:outline-none"
+                    className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                   />
                 </label>
                 <section className="flex flex-col gap-2">
-                  <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
+                  <label
+                    className={`flex items-center mx-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200 ${
+                      errors.email && "border-primaryRed"
+                    }`}
+                  >
                     <Image
                       src={images.IconEmail}
                       alt="icon-email"
@@ -91,16 +95,16 @@ export default function Signup() {
                       onBlur={handleBlur}
                       required
                       value={values.email}
-                      className="p-2 focus:outline-none"
+                      className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                     />
                   </label>
                   {errors.email && (
-                    <p className="text-primaryRed">
+                    <p className="text-primaryRed font-semibold">
                       {errors.email && touched.email && errors.email}
                     </p>
                   )}
                 </section>
-                <label className="flex rounded-md px-4 border-2 focus-within:border-black transition-all duration-200">
+                <label className="flex rounded-md px-4 border-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
                     src={images.IconPassword}
                     alt="icon-password"
@@ -115,7 +119,7 @@ export default function Signup() {
                     onBlur={handleBlur}
                     required
                     value={values.password}
-                    className="p-2 focus:outline-none"
+                    className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
                   />
                 </label>
                 {errors.password && (
@@ -133,7 +137,7 @@ export default function Signup() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-white transition duration-200 bg-black rounded-lg hover:text-primaryYellow focus:shadow-outline focus:outline-none w-full font-semibold"
+                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBlack transition duration-200 bg-primaryBackground rounded-lg hover:bg-primaryBlue focus:shadow-outline focus:outline-none w-full font-semibold"
                 >
                   Signup
                 </button>
@@ -149,7 +153,7 @@ export default function Signup() {
           </p>
         </section>
 
-        <section className="bg-black basis-1/2 h-screen text-white flex justify-center items-center">
+        <section className="bg-primaryBlack basis-2/5 h-screen text-white flex justify-center items-center">
           <motion.h1
             className={`${LO.className} text-7xl text-primaryBackground`}
             initial={{ opacity: 0 }}

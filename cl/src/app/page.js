@@ -38,7 +38,10 @@ export default function Home() {
             >
               <p>Manage Task</p>
               <p>
-                With <span className="highlight">Ease</span>
+                With{" "}
+                <span className="bg-primaryRed px-2 text-primaryBackground ">
+                  Ease
+                </span>
               </p>
             </section>
 
@@ -52,9 +55,9 @@ export default function Home() {
             <button
               className={`${LO.className} text-xl relative inline-block px-4 py-2 font-medium group rounded-md w-fit`}
             >
-              <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
-              <span className="absolute inset-0 w-full h-full bg-primaryYellow border-2 border-black group-hover:bg-black rounded-md"></span>
-              <span className="relative text-black group-hover:text-primaryYellow rounded-md">
+              <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-primaryBlack group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
+              <span className="absolute inset-0 w-full h-full bg-primaryYellow border-2 border-primaryBlack group-hover:bg-primaryBlack rounded-md"></span>
+              <span className="relative text-primaryBlack group-hover:text-primaryYellow rounded-md">
                 Know More
               </span>
             </button>

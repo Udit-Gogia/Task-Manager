@@ -33,7 +33,7 @@ export default function Sidebar({ activePage }) {
   ];
   return (
     <div
-      className={`${fontLato.className} h-screen border-r-2 shadow-lg p-8 min-w-fit flex flex-col justify-between`}
+      className={`${fontLato.className}  h-screen border-r-2 border-primaryBlack p-8 min-w-fit flex flex-col justify-between`}
     >
       <section className="flex flex-col gap-8">
         <section className="flex gap-2 items-center pb-4 border-b-2">

@@ -13,9 +13,8 @@ export async function loginUser(userData, setErrMessage) {
 
   const result = await response.json();
 
-  console.log("result is ", result);
   const { token } = await result;
-  saveToLS("token", token);
+  token !== undefined && saveToLS("token", token);
 
   if (response.status === 404) {
     setErrMessage("Email Address not found");
@@ -76,8 +75,4 @@ export async function logoutUser(setErrMessage) {
     localStorage.removeItem("token");
   }
   return result;
-}
-
-export async function updateUser(userData, setApiMsg) {
-  console.log(userData);
 }

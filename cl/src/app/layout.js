@@ -1,9 +1,6 @@
 "use client";
 import { AnimatePresence } from "framer-motion";
 import "./globals.css";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Create Next App",
@@ -14,9 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <AnimatePresence mode="wait">
-        <body suppressHydrationWarning={true} className={inter.className}>
-          {children}
-        </body>
+        <body suppressHydrationWarning={true}>{children}</body>
       </AnimatePresence>
     </html>
   );

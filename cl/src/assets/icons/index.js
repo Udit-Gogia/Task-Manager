@@ -8,6 +8,9 @@ import IconChat from "./sidebar/chat.svg";
 import IconHome from "./sidebar/home.svg";
 import IconLogout from "./sidebar/logout.svg";
 import IconUser from "./sidebar/user.svg";
+import IconUserForm from "./username-form.svg";
+import IconPasswordForm from "./password-form.svg";
+import IconEmailForm from "./email-form.svg";
 
 const images = {
   ImgAlmond,
@@ -20,6 +23,9 @@ const images = {
   IconHome,
   IconLogout,
   IconUser,
+  IconEmailForm,
+  IconPasswordForm,
+  IconUserForm,
 };
 
 export default images;

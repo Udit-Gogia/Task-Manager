@@ -24,7 +24,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: black;
+  background-color: #161616;
   transform-origin: bottom;
 }
 
@@ -34,7 +34,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: black;
+  background-color: #161616;
   transform-origin: top;
 }
 
