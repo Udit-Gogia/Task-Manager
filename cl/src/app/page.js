@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Navbar from "./dashboard/components/Navbar";
-import { AnimatePresence, motion } from "framer-motion";
+import Navbar from "../components/Navbar";
+import { AnimatePresence } from "framer-motion";
 import images from "@/assets/icons";
 import { Lilita_One } from "next/font/google";
 import Cookies from "js-cookie";
@@ -18,15 +18,7 @@ export default function Home() {
   const [gif, setGif] = useState(images.GIFLogo);
   const [cursorLoc, setCursorLoc] = useState({});
 
-  useEffect(() => {
-    if (Cookies.get("token")) {
-      router.push("/dashboard");
-    }
-  }, []);
-
-  function reloadImg() {
-    setGif(images.GIFLogo);
-  }
+  Cookies.get("token") && router.push("/dashboard");
 
   return (
     <AnimatePresence mode="wait">

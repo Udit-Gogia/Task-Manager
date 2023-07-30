@@ -22,7 +22,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="bg-primaryBackground h-screen w-screen flex overflow-y-hidden p-4">
+      <div className="bg-primaryBackground h-screen w-screen flex overflow-y-hidden p-2">
         <Sidebar activePage={"Profile"} />
         <section className="w-full p-4 flex flex-col m-4 gap-8 ">
           <h1 className="text-2xl font-semibold text-center">

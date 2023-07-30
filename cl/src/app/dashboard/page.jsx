@@ -4,7 +4,7 @@ import { useEffect, useState, Fragment } from "react";
 
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
-import { getTasks } from "@/scripts/task";
+import { getTasks, createTask } from "@/scripts/task";
 import { Dialog, Transition, Menu } from "@headlessui/react";
 import images from "@/assets/icons";
 import Image from "next/image";
@@ -15,22 +15,26 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
     <>
       <Menu as="div" className="relative inline-block text-left">
         <div>
-          <Menu.Button
-            className={`inline-flex w-full border-2  justify-center rounded-md ${
-              taskStatus === "In Progress"
-                ? "bg-primaryGreen border-primaryGreen"
-                : taskStatus === "Completed"
-                ? "bg-primaryBlue border-primaryBlue"
-                : taskStatus === "Cancelled"
-                ? "bg-primaryRed border-primaryRed"
-                : "bg-primaryBlack border-primaryBlack"
-            }   bg-opacity-100 px-4 py-2 text-sm font-medium text-primaryBackground hover:bg-primaryBackground hover:text-primaryBlack transition-all min-w-max `}
-          >
-            {taskStatus !== "" ? (
-              taskStatus
-            ) : (
-              <span className="px-4">Status</span>
-            )}
+          <Menu.Button className="relative min-w-max inline-block px-4 py-2 font-medium group rounded-md text-xl">
+            <span className="absolute inset-0  h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-primaryBlack group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
+            <span
+              className={`absolute inset-0 h-full ${
+                taskStatus === "In Progress"
+                  ? "bg-green-500"
+                  : taskStatus === "Completed"
+                  ? "bg-primaryBlue"
+                  : taskStatus === "Cancelled"
+                  ? "bg-primaryRed"
+                  : "bg-primaryBackground"
+              }  border-2  group-hover:bg-black rounded-md  border-primaryBlack `}
+            ></span>
+            <span className="relative text-primaryBlack group-hover:text-primaryBackground rounded-md min-w-max">
+              {taskStatus !== "" ? (
+                taskStatus
+              ) : (
+                <span className="mx-6">Status</span>
+              )}
+            </span>
           </Menu.Button>
         </div>
         <Transition
@@ -87,6 +91,133 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
         </Transition>
       </Menu>
     </>
+  );
+};
+
+const TaskCreation = ({
+  modalOpen,
+  setModalOpen,
+  formData,
+  setFormdata,
+  taskStatus,
+  setTaskStatus,
+}) => {
+  return (
+    <Transition appear show={modalOpen} as={Fragment}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        onClose={() => setModalOpen(false)}
+      >
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-primaryBlack bg-opacity-40" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 max-h-1/2">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel
+                className={`w-full max-w-fit transform rounded-2xl bg-primaryBackground  p-8 text-left align-middle shadow-xl transition-all`}
+              >
+                <form
+                  className="flex flex-col gap-8"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <section className="flex gap-8 items-end">
+                    <Dialog.Title
+                      as="h3"
+                      className="flex w-full items-center justify-between text-xl font-medium leading-6 text-primaryBlack"
+                    >
+                      <input
+                        type="text"
+                        value={formData.title || ""}
+                        placeholder="Task Name"
+                        onChange={(e) =>
+                          setFormdata({
+                            ...formData,
+                            title: e.target.value,
+                          })
+                        }
+                        className="text-xl border-b-2 py-2 border-primaryBlack focus-within:border-primaryBlue placeholder:text-gray-500 bg-primaryBackground focus:outline-none capitalize"
+                      />
+                    </Dialog.Title>
+
+                    <TaskStatusOption
+                      taskStatus={taskStatus}
+                      setTaskStatus={setTaskStatus}
+                    />
+                    <button
+                      type="button"
+                      className="my-auto"
+                      onClick={() => setModalOpen(false)}
+                    >
+                      <Image
+                        src={images.IconCross}
+                        alt="icon-cross"
+                        width={"40"}
+                        height={"40"}
+                      />
+                    </button>
+                  </section>
+
+                  <section>
+                    <textarea
+                      id="newTask"
+                      className="w-full border-2 border-primaryBlack rounded-lg p-4 resize-none bg-primaryBackground"
+                      placeholder="Type something about the task..."
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormdata({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
+                      rows={5}
+                    />
+                  </section>
+
+                  <button
+                    className="relative inline-block px-4 py-2 font-medium group rounded-md text-xl"
+                    onClick={async () => {
+                      const res = await createTask({
+                        ...formData,
+                        status: taskStatus,
+                      });
+
+                      console.log("after api call inside component", res);
+                    }}
+                  >
+                    <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
+                    <span className="absolute inset-0 w-full h-full bg-primaryBackground border-2 border-black group-hover:bg-black rounded-md"></span>
+                    <span className="relative text-black group-hover:text-primaryBackground rounded-md">
+                      Create
+                    </span>
+                  </button>
+                </form>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
   );
 };
 
@@ -150,112 +281,69 @@ export default function Dashboard() {
               />
             </section>
 
-            <Transition appear show={modalOpen} as={Fragment}>
-              <Dialog
-                as="div"
-                className="relative z-10"
-                onClose={() => setModalOpen(false)}
-              >
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0 bg-primaryBlack bg-opacity-40" />
-                </Transition.Child>
-
-                <div className="fixed inset-0 max-h-1/2">
-                  <div className="flex min-h-full items-center justify-center p-4 text-center">
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0 scale-95"
-                      enterTo="opacity-100 scale-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100 scale-100"
-                      leaveTo="opacity-0 scale-95"
-                    >
-                      <Dialog.Panel
-                        className={`w-full max-w-fit transform rounded-2xl bg-primaryBackground  p-8 text-left align-middle shadow-xl transition-all`}
-                      >
-                        <form className="flex flex-col gap-8">
-                          <section className="flex gap-8 items-end">
-                            <Dialog.Title
-                              as="h3"
-                              className="flex w-full items-center justify-between text-xl font-medium leading-6 text-primaryBlack"
-                            >
-                              <input
-                                type="text"
-                                value={formData.title}
-                                placeholder="Task Name"
-                                onChange={(e) =>
-                                  setFormdata({
-                                    ...formData,
-                                    title: e.target.value,
-                                  })
-                                }
-                                className="text-xl border-b-2 py-2 border-primaryBlack focus-within:border-primaryBlue placeholder:text-gray-500 bg-primaryBackground focus:outline-none capitalize"
-                              />
-                            </Dialog.Title>
-
-                            <TaskStatusOption
-                              taskStatus={taskStatus}
-                              setTaskStatus={setTaskStatus}
-                            />
-                            <button
-                              type="button"
-                              className="my-auto"
-                              onClick={() => setModalOpen(false)}
-                            >
-                              <Image
-                                src={images.IconCross}
-                                alt="icon-cross"
-                                width={"40"}
-                                height={"40"}
-                              />
-                            </button>
-                          </section>
-
-                          <section>
-                            <textarea
-                              id="newTask"
-                              className="w-full border-2 border-primaryBlack rounded-lg p-4 resize-none bg-primaryBackground"
-                              placeholder="Type something about the task..."
-                              value={formData.description}
-                              onChange={(e) =>
-                                setFormdata({
-                                  ...formData,
-                                  description: e.target.value,
-                                })
-                              }
-                              rows={5}
-                            />
-                          </section>
-
-                          <div className="mt-4">
-                            <button
-                              type="button"
-                              className="inline-flex justify-center rounded-md border border-transparent bg-secondaryBlue px-4 py-2 text-primaryBlack hover:bg-primaryBlue "
-                              onClick={() => setModalOpen(false)}
-                            >
-                              Create
-                            </button>
-                          </div>
-                        </form>
-                      </Dialog.Panel>
-                    </Transition.Child>
-                  </div>
-                </div>
-              </Dialog>
-            </Transition>
+            <TaskCreation
+              modalOpen={modalOpen}
+              setModalOpen={setModalOpen}
+              formData={formData}
+              setFormdata={setFormdata}
+              taskStatus={taskStatus}
+              setTaskStatus={setTaskStatus}
+            />
           </div>
         ) : (
-          <div>
-            <p>There are tasks in the list</p>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <section className="bg-secondaryRed flex flex-col jusitfy-center items-center p-8 gap-4 rounded-lg self-baseline">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(true)}
+                  className="opacity-50 hover:opacity-100 transition-all"
+                >
+                  <Image
+                    src={images.IconCreate}
+                    alt="icon-create"
+                    width={"70"}
+                    height={"70"}
+                    className="m-2 rounded-full ring-4 ring-primaryBlack p-4"
+                  />
+                </button>
+
+                <h1 className="font-bold text-4xl">Lets get started</h1>
+                <p className="">
+                  Click on the plus "+" button to create a new task
+                </p>
+              </section>
+              <TaskCreation
+                modalOpen={modalOpen}
+                setModalOpen={setModalOpen}
+                formData={formData}
+                setFormdata={setFormdata}
+                taskStatus={taskStatus}
+                setTaskStatus={setTaskStatus}
+              />
+            </div>
+            {tasks.map((task, index) => {
+              return (
+                <div
+                  key={index}
+                  className={`${
+                    task.status === "In Progress"
+                      ? "bg-[#3D405B] "
+                      : task.status === "Completed"
+                      ? "bg-primaryBlue"
+                      : task.status === "Cancelled"
+                      ? "bg-primaryRed"
+                      : "bg-primaryBackground"
+                  } py-4 px-8 rounded-lg flex flex-col gap-2 lg `}
+                >
+                  <h1 className="font-semibold tracking-wide w-full text-3xl ">
+                    {task.title}
+                  </h1>
+
+                  <p>{task.description}</p>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
