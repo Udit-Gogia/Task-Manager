@@ -11,6 +11,13 @@ import IconUser from "./sidebar/user.svg";
 import IconUserForm from "./username-form.svg";
 import IconPasswordForm from "./password-form.svg";
 import IconEmailForm from "./email-form.svg";
+import ImageAlmond from "../images/almond-webp.webp";
+import IconHomeSelected from "./sidebar/home-selected.svg";
+import IconMsgSelected from "./sidebar/message-selected.svg";
+import ImageDashboardBg from "../images/dashboard-bg.svg";
+import ImageDashboardBgWebp from "../images/dashboard-bg.webp";
+import IconCreate from "./create.svg";
+import IconCross from "./cross.svg";
 
 const images = {
   ImgAlmond,
@@ -26,6 +33,13 @@ const images = {
   IconEmailForm,
   IconPasswordForm,
   IconUserForm,
+  ImageAlmond,
+  IconHomeSelected,
+  IconMsgSelected,
+  IconCreate,
+  ImageDashboardBg,
+  ImageDashboardBgWebp,
+  IconCross,
 };
 
 export default images;

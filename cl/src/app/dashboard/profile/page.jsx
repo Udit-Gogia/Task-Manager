@@ -21,14 +21,8 @@ export default function Profile() {
   }, []);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ y: "10vh" }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        className="bg-primaryBackground h-screen w-screen flex overflow-y-hidden"
-      >
+    <>
+      <div className="bg-primaryBackground h-screen w-screen flex overflow-y-hidden p-4">
         <Sidebar activePage={"Profile"} />
         <section className="w-full p-4 flex flex-col m-4 gap-8 ">
           <h1 className="text-2xl font-semibold text-center">
@@ -156,7 +150,7 @@ export default function Profile() {
             )}
           </Formik>
         </section>
-      </motion.div>
-    </AnimatePresence>
+      </div>
+    </>
   );
 }

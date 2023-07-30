@@ -1,4 +1,3 @@
-"use client";
 import images from "@/assets/icons";
 import Image from "next/image";
 import { Lato } from "next/font/google";
@@ -17,33 +16,40 @@ export default function Sidebar({ activePage }) {
   const sidebarOptions = [
     {
       title: "Dashboard",
-      icon: images.IconHome,
+      icon: images.IconHomeSelected,
       navigate: "/dashboard",
+      selectedIcon: images.IconHome,
     },
     {
       title: "Profile",
-      icon: images.IconUser,
+      icon: images.IconUserForm,
       navigate: "/dashboard/profile",
+      selectedIcon: images.IconUser,
     },
     {
       title: "Chat",
-      icon: images.IconChat,
+      icon: images.IconMsgSelected,
       navigate: "/dashboard",
+      selectedIcon: images.IconChat,
     },
   ];
   return (
     <div
-      className={`${fontLato.className}  h-screen border-r-2 border-primaryBlack p-8 min-w-fit flex flex-col justify-between`}
+      className={`${fontLato.className} bg-primaryBlack rounded-lg border-r-2 border-primaryBlack p-8 min-w-fit flex flex-col justify-between`}
     >
       <section className="flex flex-col gap-8">
         <section className="flex gap-2 items-center pb-4 border-b-2">
           <Image
-            src={images.ImgAlmond}
+            src={images.ImageAlmond}
             alt="almonds-logo"
-            width={"30"}
-            height={"30"}
+            width={"40"}
+            height={"40"}
+            priority
+            style={{ height: "auto", width: "auto" }}
           />
-          <p className="font-LO text-2xl">ALMONDS.</p>
+          <p className="font-LO text-2xl text-primaryBackground tracking-wide">
+            ALMONDS.
+          </p>
         </section>
 
         <section className="flex flex-col gap-4">
@@ -53,19 +59,23 @@ export default function Sidebar({ activePage }) {
                 onClick={() => router.push(option.navigate)}
                 className={`${
                   activePage === option.title &&
-                  "bg-primaryBlue text-primaryBackground"
-                } flex gap-2 p-2  rounded-md items-center border-2 tracking-wide border-primaryBackground hover:cursor-pointer transition-all one`}
+                  "bg-primaryBackground text-primaryBlack"
+                } flex gap-2 p-2 text-primaryBackground rounded-md items-center tracking-wide hover:cursor-pointer transition-all one`}
                 key={index}
               >
                 <Image
-                  src={option.icon}
+                  src={
+                    activePage === option.title
+                      ? option.selectedIcon
+                      : option.icon
+                  }
                   alt={option.title}
                   width={"25"}
                   height={"25"}
                 />
                 <p className="text-lg relative w-max">
                   <span>{option.title}</span>
-                  <span className="absolute -bottom-1 left-0 w-0 transition-all h-1 bg-black rounded-md"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 transition-all h-1 bg-primaryBlue rounded-md"></span>
                 </p>
               </button>
             );
@@ -74,7 +84,7 @@ export default function Sidebar({ activePage }) {
       </section>
 
       <button
-        className="flex gap-2 p-2 rounded-md items-center border-2 border-primaryBackground hover:cursor-pointer transition-all"
+        className="flex gap-2 p-2 text-primaryBackground rounded-md items-center tracking-wide hover:cursor-pointer transition-all one"
         onClick={async () => {
           await logoutUser(setErrMsg);
           router.push("/");
@@ -83,14 +93,14 @@ export default function Sidebar({ activePage }) {
         <Image
           src={images.IconLogout}
           alt={"icon-logout"}
-          width={"25"}
-          height={"25"}
+          width={"22"}
+          height={"22"}
         />
 
         {/* <p className="">Logout</p> */}
         <p className="text-lg relative w-max one">
           <span>Logout</span>
-          <span className="absolute -bottom-1 left-0 w-0 transition-all h-1 bg-black rounded-md"></span>
+          <span className="absolute -bottom-1 left-0 w-0 transition-all h-1 bg-primaryBlue rounded-md"></span>
         </p>
       </button>
     </div>

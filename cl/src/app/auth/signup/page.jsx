@@ -36,7 +36,7 @@ export default function Signup() {
             }}
             onSubmit={async (values) => {
               const res = await signinUser(values, setApiResMsg);
-
+              console.log("new user created", res);
               if (Object.keys(res).includes("err")) {
                 console.log("res includes err");
               } else {
@@ -55,9 +55,9 @@ export default function Signup() {
             }) => (
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-8 bg-primaryBlack p-8 shadow-custom rounded-lg "
+                className="flex flex-col gap-8 bg-primaryBlack p-8 shadow-custom rounded-lg px-10"
               >
-                <label className="flex rounded-md px-4 border-2 focus-within:border-primaryBlue transition-all duration-200">
+                <label className="flex items-center border-b-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
                     src={images.IconUsername}
                     alt="icon-name"
@@ -69,7 +69,6 @@ export default function Signup() {
                     name="name"
                     placeholder="Full Name"
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     required
                     value={values.name}
                     className="p-2 focus:outline-none bg-primaryBlack text-primaryBackground"
@@ -77,7 +76,7 @@ export default function Signup() {
                 </label>
                 <section className="flex flex-col gap-2">
                   <label
-                    className={`flex items-center mx-4 border-b-2 focus-within:border-primaryBlue transition-all duration-200 ${
+                    className={`flex items-center border-b-2 focus-within:border-primaryBlue transition-all duration-200 ${
                       errors.email && "border-primaryRed"
                     }`}
                   >
@@ -104,7 +103,7 @@ export default function Signup() {
                     </p>
                   )}
                 </section>
-                <label className="flex rounded-md px-4 border-2 focus-within:border-primaryBlue transition-all duration-200">
+                <label className="flex items-center border-b-2 focus-within:border-primaryBlue transition-all duration-200">
                   <Image
                     src={images.IconPassword}
                     alt="icon-password"

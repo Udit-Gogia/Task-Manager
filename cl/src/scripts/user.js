@@ -1,5 +1,8 @@
+import Cookies from "js-cookie";
+const token = Cookies.get("token");
+
 export async function getUserData() {
-  const token = localStorage.getItem("token");
+  // const token = Cookies.get("token");
   const response = await fetch("/users/me", {
     method: "GET",
     headers: {
@@ -14,7 +17,7 @@ export async function getUserData() {
 }
 
 export async function updateUserData(userData) {
-  const token = localStorage.getItem("token");
+  // const token = Cookies.get("token");
 
   const response = await fetch("/user/me", {
     method: "PATCH",

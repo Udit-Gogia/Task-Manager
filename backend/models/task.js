@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
+    title: { type: String, required: true },
     description: {
       type: String,
       required: true,
@@ -15,6 +16,12 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+    },
+    status: {
+      type: String,
+      default: "In Progress",
+      enum: ["In Progress", "Completed", "Cancelled"],
+      required: true,
     },
   },
   {

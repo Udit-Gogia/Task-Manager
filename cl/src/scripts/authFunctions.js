@@ -1,5 +1,11 @@
+import Cookies from "js-cookie";
+
 export function saveToLS(property, value) {
   localStorage.setItem(property, value);
+}
+
+export function biteCookie(key, value) {
+  return Cookies.set(key, `${value}`);
 }
 
 export async function loginUser(userData, setErrMessage) {
@@ -14,7 +20,8 @@ export async function loginUser(userData, setErrMessage) {
   const result = await response.json();
 
   const { token } = await result;
-  token !== undefined && saveToLS("token", token);
+  // token !== undefined && saveToLS("token", token);
+  token !== undefined && biteCookie("token", token);
 
   if (response.status === 404) {
     setErrMessage("Email Address not found");
@@ -38,9 +45,6 @@ export const signinUser = async (userData, setErrMessage) => {
 
   const result = await response.json();
 
-  const { token } = await result;
-  saveToLS("token", token);
-
   if (response.status === 409) {
     setErrMessage("Another user with same email address already exists");
   } else if (response.status === 400) {
@@ -50,6 +54,9 @@ export const signinUser = async (userData, setErrMessage) => {
       setErrMessage('Password cannot contain the word "password"');
     }
   } else {
+    const { token } = await result;
+    // saveToLS("token", token);
+    biteCookie("token", token);
     setErrMessage("");
   }
 
@@ -57,7 +64,8 @@ export const signinUser = async (userData, setErrMessage) => {
 };
 
 export async function logoutUser(setErrMessage) {
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+  const token = JSON.parse(Cookies.get("token"));
   const response = await fetch("/user/logout", {
     method: "POST",
     headers: {

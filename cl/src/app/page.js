@@ -6,6 +6,7 @@ import Navbar from "./dashboard/components/Navbar";
 import { AnimatePresence, motion } from "framer-motion";
 import images from "@/assets/icons";
 import { Lilita_One } from "next/font/google";
+import Cookies from "js-cookie";
 
 const LO = Lilita_One({
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export default function Home() {
   const [cursorLoc, setCursorLoc] = useState({});
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (Cookies.get("token")) {
       router.push("/dashboard");
     }
   }, []);
@@ -39,8 +40,8 @@ export default function Home() {
               <p>Manage Task</p>
               <p>
                 With{" "}
-                <span className="bg-primaryRed px-2 text-primaryBackground ">
-                  Ease
+                <span class="before:block before:absolute before:-inset-1 px-2 before:-skew-y-3 before:bg-primaryRed relative inline-block">
+                  <span className="relative text-primaryBackground ">Ease</span>
                 </span>
               </p>
             </section>

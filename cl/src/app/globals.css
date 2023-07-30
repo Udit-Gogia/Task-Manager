@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 
+* {
+  scroll-behavior: smooth;
+}
+
 .cursor-almonds {
   cursor: url("../assets/images/almond2.png"), default;
 }
@@ -45,6 +49,24 @@
 
 .one:hover span:last-child {
   width: 100%;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 1em;
+  padding: 0 1em;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #161616;
+  border-radius: 20px;
 }
 
 @tailwind utilities;
