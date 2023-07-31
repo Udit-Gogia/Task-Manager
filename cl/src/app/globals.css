@@ -69,4 +69,9 @@
   border-radius: 20px;
 }
 
+/* .card-shadow {
+  box-shadow: 4px 4px 0 #161616;
+  
+} */
+
 @tailwind utilities;

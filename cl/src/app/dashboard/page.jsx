@@ -1,14 +1,16 @@
 "use client";
-import "./styles/dashboard.css";
 import { useEffect, useState, Fragment } from "react";
-
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
-import { getTasks, createTask } from "@/scripts/task";
-import { Dialog, Transition, Menu } from "@headlessui/react";
+import { getTasks, createTask, searchTask } from "@/scripts/task";
+import { Dialog, Transition, Menu, Combobox } from "@headlessui/react";
 import images from "@/assets/icons";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import ShowTasks from "./components/showTasks";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
   return (
@@ -101,6 +103,7 @@ const TaskCreation = ({
   setFormdata,
   taskStatus,
   setTaskStatus,
+  setTasks,
 }) => {
   return (
     <Transition appear show={modalOpen} as={Fragment}>
@@ -197,10 +200,13 @@ const TaskCreation = ({
                   <button
                     className="relative inline-block px-4 py-2 font-medium group rounded-md text-xl"
                     onClick={async () => {
-                      const res = await createTask({
-                        ...formData,
-                        status: taskStatus,
-                      });
+                      const res = await createTask(
+                        {
+                          ...formData,
+                          status: taskStatus,
+                        },
+                        setTasks
+                      );
 
                       console.log("after api call inside component", res);
                     }}
@@ -229,6 +235,8 @@ export default function Dashboard() {
     description: "",
   });
   const [taskStatus, setTaskStatus] = useState("");
+  const [query, setQuery] = useState("");
+  const [filteredList, setFilteredList] = useState([]);
   const router = useRouter();
   useEffect(() => {
     if (!Cookies.get("token")) {
@@ -241,9 +249,14 @@ export default function Dashboard() {
       setTasks(res);
     })();
 
-    return () => {};
-  }, []);
+    const debounce = setTimeout(async () => {
+      await searchTask(query.toLowerCase(), setFilteredList);
+    }, 1000);
 
+    return () => {
+      clearTimeout(debounce);
+    };
+  }, [query]);
   return (
     <div className="bg-primaryBackground h-screen w-screen flex overflow-hidden p-2">
       <Sidebar activePage={"Dashboard"} />
@@ -288,63 +301,166 @@ export default function Dashboard() {
               setFormdata={setFormdata}
               taskStatus={taskStatus}
               setTaskStatus={setTaskStatus}
+              setTasks={setTasks}
             />
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <section className="bg-secondaryRed flex flex-col jusitfy-center items-center p-8 gap-4 rounded-lg self-baseline">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(true)}
-                  className="opacity-50 hover:opacity-100 transition-all"
-                >
-                  <Image
-                    src={images.IconCreate}
-                    alt="icon-create"
-                    width={"70"}
-                    height={"70"}
-                    className="m-2 rounded-full ring-4 ring-primaryBlack p-4"
+          <div className="w-full px-4">
+            <header className="flex gap-4 border-b-2 border-primaryBlack pt-2 pb-4 justify-between">
+              <div className="w-1/3 relative">
+                <div className="relative flex items-center w-full h-12 rounded-lg focus-within:border-primaryBlue bg-primaryBackground overflow-hidden border-primaryBlack border-2 ">
+                  <div className="grid place-items-center h-full w-12 text-gray-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                        stroke="#161616"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+
+                  <input
+                    className="peer h-full w-full outline-none text-md text-gray-700  bg-primaryBackground"
+                    type="text"
+                    id="search"
+                    placeholder="Search something.."
+                    value={query}
+                    onChange={async (e) => {
+                      setQuery(e.target.value);
+
+                      query !== "" &&
+                        (await searchTask(query, setFilteredList));
+                    }}
                   />
-                </button>
-
-                <h1 className="font-bold text-4xl">Lets get started</h1>
-                <p className="">
-                  Click on the plus "+" button to create a new task
-                </p>
-              </section>
-              <TaskCreation
-                modalOpen={modalOpen}
-                setModalOpen={setModalOpen}
-                formData={formData}
-                setFormdata={setFormdata}
-                taskStatus={taskStatus}
-                setTaskStatus={setTaskStatus}
-              />
-            </div>
-            {tasks.map((task, index) => {
-              return (
-                <div
-                  key={index}
-                  className={`${
-                    task.status === "In Progress"
-                      ? "bg-[#3D405B] "
-                      : task.status === "Completed"
-                      ? "bg-primaryBlue"
-                      : task.status === "Cancelled"
-                      ? "bg-primaryRed"
-                      : "bg-primaryBackground"
-                  } py-4 px-8 rounded-lg flex flex-col gap-2 lg `}
-                >
-                  <h1 className="font-semibold tracking-wide w-full text-3xl ">
-                    {task.title}
-                  </h1>
-
-                  <p>{task.description}</p>
+                  <button
+                    onClick={() => setQuery("")}
+                    className={`${
+                      query === "" && "hidden"
+                    } grid place-items-center h-full w-12 text-gray-300 `}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M15 9L9 15M9 9L15 15M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                        stroke="#161616"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
-              );
-            })}
+                <section
+                  className={`${
+                    query === "" && "hidden"
+                  } bg-primaryBlack text-primaryBackground p-2 rounded-md absolute z-20 flex flex-col gap-2 w-full `}
+                >
+                  {Cookies.get("token") &&
+                    filteredList.map((filteredTask, index) => {
+                      return (
+                        <span
+                          key={index}
+                          className="font-lg p-2 rounded-lg hover:bg-primaryGreen transition-all"
+                        >
+                          {filteredTask.title}
+                        </span>
+                      );
+                    })}
+                </section>
+              </div>
+
+              <button
+                className={`${inter.className} relative inline-block px-4 py-2 font-medium  group rounded-md text-lg `}
+                onClick={() => setModalOpen(true)}
+              >
+                <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
+                <span className="absolute inset-0 w-full h-full bg-primaryYellow border-2 border-black group-hover:bg-black rounded-md"></span>
+                <span className="relative text-black group-hover:text-primaryYellow rounded-md">
+                  Add New Task
+                </span>
+              </button>
+            </header>
+
+            <TaskCreation
+              modalOpen={modalOpen}
+              setModalOpen={setModalOpen}
+              formData={formData}
+              setFormdata={setFormdata}
+              taskStatus={taskStatus}
+              setTaskStatus={setTaskStatus}
+              setTasks={setTasks}
+            />
+
+            <ShowTasks tasks={tasks} />
           </div>
+
+          // <div className="grid grid-cols-3 gap-4">
+          //   <div>
+          //     <section className="bg-secondaryRed flex flex-col jusitfy-center items-center p-8 gap-4 rounded-lg self-baseline">
+          //       <button
+          //         type="button"
+          //         onClick={() => setModalOpen(true)}
+          //         className="opacity-50 hover:opacity-100 transition-all"
+          //       >
+          //         <Image
+          //           src={images.IconCreate}
+          //           alt="icon-create"
+          //           width={"70"}
+          //           height={"70"}
+          //           className="m-2 rounded-full ring-4 ring-primaryBlack p-4"
+          //         />
+          //       </button>
+
+          //       <h1 className="font-bold text-4xl">Lets get started</h1>
+          //       <p className="">
+          //         Click on the plus "+" button to create a new task
+          //       </p>
+          //     </section>
+          //     <TaskCreation
+          //       modalOpen={modalOpen}
+          //       setModalOpen={setModalOpen}
+          //       formData={formData}
+          //       setFormdata={setFormdata}
+          //       taskStatus={taskStatus}
+          //       setTaskStatus={setTaskStatus}
+          //     />
+          //   </div>
+          //   {tasks.map((task, index) => {
+          //     return (
+          //       <div
+          //         key={index}
+          //         className={`${
+          //           task.status === "In Progress"
+          //             ? "bg-[#3D405B] "
+          //             : task.status === "Completed"
+          //             ? "bg-primaryBlue"
+          //             : task.status === "Cancelled"
+          //             ? "bg-primaryRed"
+          //             : "bg-primaryBackground"
+          //         } py-4 px-8 rounded-lg flex flex-col gap-2 lg `}
+          //       >
+          //         <h1 className="font-semibold tracking-wide w-full text-3xl ">
+          //           {task.title}
+          //         </h1>
+
+          //         <p>{task.description}</p>
+          //       </div>
+          //     );
+          //   })}
+          // </div>
         )}
       </section>
     </div>

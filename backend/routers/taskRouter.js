@@ -3,6 +3,18 @@ const Task = require("../models/task");
 const router = new express.Router();
 const auth = require("../middleware/auth");
 
+router.get("/tasks/:title", auth, async (req, res) => {
+  try {
+    await req.user.populate({ path: "tasks" });
+    const searchTask = await req.user.tasks.filter((task) =>
+      task.title.toLowerCase().includes(req.params.title)
+    );
+    res.send(searchTask);
+  } catch (e) {
+    console.log("encountered an error you noob!!");
+  }
+});
+
 router.get("/tasks", auth, async (req, res) => {
   const match = {};
   const sort = {};
@@ -35,29 +47,29 @@ router.get("/tasks", auth, async (req, res) => {
   }
 });
 
-router.get("/tasks", auth, async (req, res) => {
-  const match = {};
-  const sort = {};
+// router.get("/tasks", auth, async (req, res) => {
+//   const match = {};
+//   const sort = {};
 
-  console.log(req.query);
+//   console.log(req.query);
 
-  if (req.query.completed) {
-    return (match.completed = req.query.completed == "1");
-  }
+//   if (req.query.completed) {
+//     return (match.completed = req.query.completed == "1");
+//   }
 
-  try {
-    await req.user.populate({
-      path: "tasks",
-      match,
-      options: {
-        limit: req.query.limit,
-        skip: req.query.skip,
-        sort,
-      },
-    });
-    res.send(req.user.tasks);
-  } catch (err) {}
-});
+//   try {
+//     await req.user.populate({
+//       path: "tasks",
+//       match,
+//       options: {
+//         limit: req.query.limit,
+//         skip: req.query.skip,
+//         sort,
+//       },
+//     });
+//     res.send(req.user.tasks);
+//   } catch (err) {}
+// });
 
 router.get("/task/:_id", auth, async (req, res) => {
   const task = await Task.findOne({
@@ -80,15 +92,27 @@ router.get("/task/:_id", auth, async (req, res) => {
 });
 
 router.post("/tasks", auth, async (req, res) => {
-  const task = new Task({ ...req.body, author: req.user._id });
+  const repTask = await Task.findOne({
+    title: req.body.title,
+    author: req.user._id,
+  });
 
   try {
-    await task.save();
-    res.status(201).send({
-      task,
-      msg: "Task created successfully",
-      code: "task-cr-success",
-    });
+    if (repTask) {
+      return res.status(409).send({
+        err,
+        msg: "A task with same title already exists",
+        code: "dupTask",
+      });
+    } else {
+      const task = new Task({ ...req.body, author: req.user._id });
+      await task.save();
+      return res.status(201).send({
+        task,
+        msg: "Task created successfully",
+        code: "task-cr-success",
+      });
+    }
   } catch (err) {
     res
       .status(400)

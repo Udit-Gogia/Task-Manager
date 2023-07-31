@@ -5,7 +5,7 @@ export function saveToLS(property, value) {
 }
 
 export function biteCookie(key, value) {
-  return Cookies.set(key, `${value}`);
+  return Cookies.set(key, `${value}`, { expires: 7 });
 }
 
 export async function loginUser(userData, setErrMessage) {
@@ -65,7 +65,7 @@ export const signinUser = async (userData, setErrMessage) => {
 
 export async function logoutUser(setErrMessage) {
   // const token = localStorage.getItem("token");
-  const token = JSON.parse(Cookies.get("token"));
+  const token = Cookies.get("token");
   const response = await fetch("/user/logout", {
     method: "POST",
     headers: {
@@ -80,7 +80,7 @@ export async function logoutUser(setErrMessage) {
     setErrMessage("Failed to logout User");
   } else {
     setErrMessage("");
-    localStorage.removeItem("token");
+    Cookies.remove("token");
   }
   return result;
 }

@@ -32,7 +32,7 @@ export default function Home() {
               <p>Manage Task</p>
               <p>
                 With{" "}
-                <span class="before:block before:absolute before:-inset-1 px-2 before:-skew-y-3 before:bg-primaryRed relative inline-block">
+                <span className="before:block before:absolute before:-inset-1 px-2 before:-skew-y-3 before:bg-primaryRed relative inline-block">
                   <span className="relative text-primaryBackground ">Ease</span>
                 </span>
               </p>

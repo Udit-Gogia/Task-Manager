@@ -13,8 +13,6 @@ export async function getTasks() {
 
   const result = await response.json();
 
-  console.log(result);
-
   return result;
 }
 
@@ -30,12 +28,25 @@ export async function createTask(taskObject, setTasks) {
 
   const result = await response.json();
 
-  // setTasks();
-
   if (result.code === "task-cr-success") {
     setTasks((prev) => [...prev, result?.task]);
   }
-  console.log(result);
+
+  return result;
+}
+
+export async function searchTask(title, setFilteredList) {
+  const response = await fetch(`/tasks/${title}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  await setFilteredList(result);
 
   return result;
 }
