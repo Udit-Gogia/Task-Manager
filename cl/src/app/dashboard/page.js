@@ -3,7 +3,7 @@ import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import { getTasks, createTask, searchTask } from "@/scripts/task";
-import { Dialog, Transition, Menu, Combobox } from "@headlessui/react";
+import { Dialog, Transition, Menu, Listbox } from "@headlessui/react";
 import images from "@/assets/icons";
 import Image from "next/image";
 import Cookies from "js-cookie";
@@ -20,15 +20,14 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
           <Menu.Button className="relative min-w-max inline-block px-4 py-2 font-medium group rounded-md text-xl">
             <span className="absolute inset-0  h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-primaryBlack group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
             <span
-              className={`absolute inset-0 h-full ${
-                taskStatus === "In Progress"
-                  ? "bg-green-500"
-                  : taskStatus === "Completed"
-                  ? "bg-primaryBlue"
+              className={`absolute inset-0 h-full ${taskStatus === "In Progress"
+                ? "bg-green-500"
+                : taskStatus === "Completed"
+                  ? "bg-completed"
                   : taskStatus === "Cancelled"
-                  ? "bg-primaryRed"
-                  : "bg-primaryBackground"
-              }  border-2  group-hover:bg-black rounded-md  border-primaryBlack `}
+                    ? "bg-cancelled"
+                    : "bg-primaryBackground"
+                }  border-2  group-hover:bg-black rounded-md  border-primaryBlack `}
             ></span>
             <span className="relative text-primaryBlack group-hover:text-primaryBackground rounded-md min-w-max">
               {taskStatus !== "" ? (
@@ -54,9 +53,8 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
                 <div
                   type="button"
                   onClick={() => setTaskStatus("In Progress")}
-                  className={`${
-                    active && "bg-primaryBackground text-primaryBlack"
-                  } group flex gap-4  items-center p-4 text-primaryBackground w-fit`}
+                  className={`${active && "bg-primaryBackground text-primaryBlack"
+                    } group flex gap-4  items-center p-4 text-primaryBackground w-fit`}
                 >
                   <span className="bg-emerald-500 p-2 rounded-full "></span>
                   <p className="">In Progress</p>
@@ -67,11 +65,10 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
               {({ active }) => (
                 <div
                   onClick={() => setTaskStatus("Completed")}
-                  className={`${
-                    active && "bg-primaryBackground text-primaryBlack"
-                  } group flex gap-4 w-full items-center p-4  text-primaryBackground`}
+                  className={`${active && "bg-primaryBackground text-primaryBlack"
+                    } group flex gap-4 w-full items-center p-4  text-primaryBackground`}
                 >
-                  <span className="bg-primaryBlue p-2 rounded-full"></span>
+                  <span className="bg-completed p-2 rounded-full"></span>
                   Completed
                 </div>
               )}
@@ -80,11 +77,10 @@ const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
               {({ active }) => (
                 <div
                   onClick={() => setTaskStatus("Cancelled")}
-                  className={`${
-                    active && "bg-primaryBackground text-primaryBlack "
-                  } group flex gap-4 w-full items-center p-4 text-primaryBackground `}
+                  className={`${active && "bg-primaryBackground text-primaryBlack "
+                    } group flex gap-4 w-full items-center p-4 text-primaryBackground `}
                 >
-                  <span className="bg-primaryRed p-2 rounded-full"></span>
+                  <span className="bg-cancelled p-2 rounded-full"></span>
                   Cancelled
                 </div>
               )}
@@ -105,8 +101,9 @@ const TaskCreation = ({
   setTaskStatus,
   setTasks,
 }) => {
+  modalOpen && console.log("opening modal")
   return (
-    <Transition appear show={modalOpen} as={Fragment}>
+    <Transition appear show={modalOpen} as={Fragment} >
       <Dialog
         as="div"
         className="relative z-10"
@@ -136,6 +133,7 @@ const TaskCreation = ({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel
+
                 className={`w-full max-w-fit transform rounded-2xl bg-primaryBackground  p-8 text-left align-middle shadow-xl transition-all`}
               >
                 <form
@@ -159,7 +157,7 @@ const TaskCreation = ({
                             title: e.target.value,
                           })
                         }
-                        className="text-xl border-b-2 py-2 border-primaryBlack focus-within:border-primaryBlue placeholder:text-gray-500 bg-primaryBackground focus:outline-none capitalize"
+                        className="text-xl border-b-2 py-2 border-primaryBlack focus-within:border-primaryBlue placeholder:text-gray-500 bg-primaryBackground focus:outline-none"
                       />
                     </Dialog.Title>
 
@@ -170,7 +168,13 @@ const TaskCreation = ({
                     <button
                       type="button"
                       className="my-auto"
-                      onClick={() => setModalOpen(false)}
+                      onClick={() => {
+                        setModalOpen(false);
+                        setTimeout(() => {
+                          setFormdata({ title: "", description: "", })
+                          setTaskStatus("")
+                        }, 100)
+                      }}
                     >
                       <Image
                         src={images.IconCross}
@@ -207,7 +211,12 @@ const TaskCreation = ({
                         },
                         setTasks
                       );
+                      setModalOpen(false)
 
+                      setTimeout(() => {
+                        setFormdata({ title: "", description: "" })
+                        setTaskStatus("")
+                      }, 100)
                       console.log("after api call inside component", res);
                     }}
                   >
@@ -227,6 +236,209 @@ const TaskCreation = ({
   );
 };
 
+const SortTasks = ({ selected, setSelected, }) => {
+  return (
+    <Listbox value={selected} onChange={setSelected}>
+      <div className="relative mt-1">
+        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-primaryBackground border-2 border-neutral-300 py-2 pl-3 pr-10 text-left sm:text-sm focus:outline-none hover:cursor-pointer hover:border-neutral-500 transition-all">
+
+          <section className="flex gap-2">
+            <Image src={images.IconSort} alt="icon-sort" width={"20"} height={"20"} />
+            <span className="">Sort By</span>
+          </section>
+          <span className=" absolute inset-y-0 right-0 flex items-center pr-2">
+            <Image src={images.IconDown} alt="icon-down" width={"20"} height={"20"} />
+          </span>
+        </Listbox.Button>
+
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-primaryBlack text-primaryBackground divide-y py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ">
+
+            <Listbox.Option
+              key={"asc"}
+              className={({ active }) =>
+                `relative cursor-default select-none py-2 pl-10 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value="desc"
+              onClick={() => setSelected("desc")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`block truncate ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    Newest
+                  </span>
+                  {selected ? (
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                      <Image src={images.IconOptionSelected} alt="icon-option-selected" width={"20"} height={"20"} />
+                    </span>
+                  ) : null}
+                </>
+              )}
+            </Listbox.Option>
+            <Listbox.Option
+              key={"desc"}
+              className={({ active }) =>
+                `relative cursor-default select-none py-2 pl-10 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value="asc"
+              onClick={() => setSelected("asc")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`block truncate ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    Oldest
+                  </span>
+                  {selected ? (
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                      <Image src={images.IconOptionSelected} alt="icon-option-selected" width={"20"} height={"20"} />
+                    </span>
+                  ) : null}
+                </>
+              )}
+            </Listbox.Option>
+
+
+          </Listbox.Options>
+        </Transition>
+      </div>
+    </Listbox >
+  )
+}
+
+const FilterTasks = ({ selected, setSelected, }) => {
+
+  return (
+    <Listbox value={selected} onChange={setSelected}>
+      <div className="relative mt-1">
+        <Listbox.Button className={`relative w-full cursor-default rounded-lg ${selected === "In Progress" ? "border-emerald-500" : selected === "Cancelled" ? "border-cancelled" : selected === "Completed" ? "border-primaryBlue" : "border-neutral-300"} bg-primaryBackground border-2 py-2 pl-3 pr-10 text-left sm:text-sm focus:outline-none hover:cursor-pointer hover:border-neutral-500 transition-all`}>
+          <section className="flex gap-2">
+            <Image src={images.IconFilter} alt="icon-filter" width={"20"} height={"20"} />
+            <span className="">Filter</span>
+          </section>
+          <span className=" absolute inset-y-0 right-0 flex items-center pr-2">
+            <Image src={images.IconDown} alt="icon-down" width={"20"} height={"20"} />
+          </span>
+        </Listbox.Button>
+        <Transition
+          as={Fragment}
+          leave="transition ease-in duration-100"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <Listbox.Options className="absolute min-w-max mt-1 max-h-60 w-full overflow-auto rounded-md bg-primaryBlack text-primaryBackground divide-y py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ">
+
+            <Listbox.Option
+              key={"none"}
+              className={({ active }) =>
+                `relative cursor-default select-none p-4 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value=""
+              onClick={() => setSelected("")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`flex gap-2 items-center ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    <span className="bg-primaryBrown p-2 h-1 w-1 rounded-full "></span>
+                    <span>None</span>
+
+                  </span>
+
+                </>
+              )}
+            </Listbox.Option>
+            <Listbox.Option
+              key={"inp"}
+              className={({ active }) =>
+                `relative cursor-default select-none p-4 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value="In Progress"
+              onClick={() => setSelected("In Progress")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`flex gap-2 items-center ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    <span className="bg-emerald-500 p-2 h-1 w-1 rounded-full "></span>
+                    <span>In Progress</span>
+
+                  </span>
+
+                </>
+              )}
+            </Listbox.Option>
+            <Listbox.Option
+              key={"com"}
+              className={({ active }) =>
+                `relative cursor-default select-none p-4 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value="Completed"
+              onClick={() => setSelected("Completed")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`flex gap-2 items-center ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    <span className="bg-completed p-2 rounded-full"></span>
+                    Completed
+                  </span>
+
+                </>
+              )}
+            </Listbox.Option>
+            <Listbox.Option
+              key={"can"}
+              className={({ active }) =>
+                `relative cursor-default select-none p-4 hover:cursor-pointer pr-4 ${active ? 'bg-primaryBackground text-primaryBlack' : 'text-primaryBackground bg-primaryBlack'
+                }`
+              }
+              value="Cancelled"
+              onClick={() => setSelected("Cancelled")}
+            >
+              {({ selected }) => (
+                <>
+                  <span
+                    className={`flex gap-2 items-center ${selected ? 'font-semibold' : 'font-normal'
+                      }`}
+                  >
+                    <span className="bg-cancelled p-2 rounded-full"></span>
+                    Cancelled
+                  </span>
+
+                </>
+              )}
+            </Listbox.Option>
+
+
+          </Listbox.Options>
+        </Transition>
+      </div>
+    </Listbox >
+  )
+}
+
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -237,14 +449,18 @@ export default function Dashboard() {
   const [taskStatus, setTaskStatus] = useState("");
   const [query, setQuery] = useState("");
   const [filteredList, setFilteredList] = useState([]);
+  const [sortMethod, setSortMethod] = useState("desc")
+  const [filterTasks, setFilterTasks] = useState("")
   const router = useRouter();
+
+
   useEffect(() => {
     if (!Cookies.get("token")) {
       router.push("/");
     }
 
     (async () => {
-      const res = await getTasks();
+      const res = await getTasks({ createdAt: sortMethod, status: filterTasks });
 
       setTasks(res);
     })();
@@ -256,9 +472,9 @@ export default function Dashboard() {
     return () => {
       clearTimeout(debounce);
     };
-  }, [query]);
+  }, [query, sortMethod, filterTasks]);
   return (
-    <div className="bg-primaryBackground h-screen w-screen flex overflow-hidden p-2">
+    <div className="bg-primaryBackground h-screen w-screen flex overflow-x-hidden p-2">
       <Sidebar activePage={"Dashboard"} />
 
       <section className="w-full mx-2 flex flex-col">
@@ -306,8 +522,8 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="w-full px-4">
-            <header className="flex gap-4 border-b-2 border-primaryBlack pt-2 pb-4 justify-between">
-              <div className="w-1/3 relative">
+            <header className="flex gap-4  pt-2 pb-4">
+              <div className="w-full relative">
                 <div className="relative flex items-center w-full h-12 rounded-lg focus-within:border-primaryBlue bg-primaryBackground overflow-hidden border-primaryBlack border-2 ">
                   <div className="grid place-items-center h-full w-12 text-gray-300">
                     <svg
@@ -328,7 +544,7 @@ export default function Dashboard() {
                   </div>
 
                   <input
-                    className="peer h-full w-full outline-none text-md text-gray-700  bg-primaryBackground"
+                    className="peer h-full w-full outline-none text-md text-gray-300  bg-primaryBackground"
                     type="text"
                     id="search"
                     placeholder="Search something.."
@@ -342,9 +558,8 @@ export default function Dashboard() {
                   />
                   <button
                     onClick={() => setQuery("")}
-                    className={`${
-                      query === "" && "hidden"
-                    } grid place-items-center h-full w-12 text-gray-300 `}
+                    className={`${query === "" && "hidden"
+                      } grid place-items-center h-full w-12 text-gray-300 `}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -364,9 +579,8 @@ export default function Dashboard() {
                   </button>
                 </div>
                 <section
-                  className={`${
-                    query === "" && "hidden"
-                  } bg-primaryBlack text-primaryBackground p-2 rounded-md absolute z-20 flex flex-col gap-2 w-full `}
+                  className={`${query === "" && "hidden"
+                    } bg-primaryBlack text-primaryBackground p-2 rounded-md absolute z-20 flex flex-col gap-2 w-full `}
                 >
                   {Cookies.get("token") &&
                     filteredList.map((filteredTask, index) => {
@@ -382,8 +596,13 @@ export default function Dashboard() {
                 </section>
               </div>
 
+              <section id="sort-filter" className="flex items-center gap-8 min-w-max">
+                <SortTasks selected={sortMethod} setSelected={setSortMethod} />
+                <FilterTasks selected={filterTasks} setSelected={setFilterTasks} />
+              </section>
+
               <button
-                className={`${inter.className} relative inline-block px-4 py-2 font-medium  group rounded-md text-lg `}
+                className={`${inter.className} relative inline-block px-4 py-2 font-medium  group rounded-md text-lg min-w-max `}
                 onClick={() => setModalOpen(true)}
               >
                 <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>

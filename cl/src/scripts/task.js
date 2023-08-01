@@ -2,8 +2,10 @@ import Cookies from "js-cookie";
 
 const token = Cookies.get("token");
 
-export async function getTasks() {
-  const response = await fetch("/tasks", {
+export async function getTasks({ createdAt = "asc", status = "" }) {
+
+
+  const response = await fetch(`/tasks?sortBy=createdAt-${createdAt}${status !== "" ? `&status=${status}` : ""}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -29,24 +31,26 @@ export async function createTask(taskObject, setTasks) {
   const result = await response.json();
 
   if (result.code === "task-cr-success") {
-    setTasks((prev) => [...prev, result?.task]);
+    setTasks((prev) => [result?.task, ...prev,]);
   }
 
   return result;
 }
 
 export async function searchTask(title, setFilteredList) {
-  const response = await fetch(`/tasks/${title}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  if (title !== "") {
+    const response = await fetch(`/tasks/${title}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  const result = await response.json();
+    const result = await response.json();
 
-  await setFilteredList(result);
+    await setFilteredList(result);
 
-  return result;
+    return result;
+  }
 }

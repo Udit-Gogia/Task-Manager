@@ -18,6 +18,11 @@ import ImageDashboardBg from "../images/dashboard-bg.svg";
 import ImageDashboardBgWebp from "../images/dashboard-bg.webp";
 import IconCreate from "./create.svg";
 import IconCross from "./cross.svg";
+import IconDown from "./down.svg"
+import IconOptionSelected from "./correct.svg"
+import IconFilter from "./filter.svg"
+import IconSort from "./sort.svg"
+import IconDropdown from "./dropdown.svg"
 
 const images = {
   ImgAlmond,
@@ -40,6 +45,11 @@ const images = {
   ImageDashboardBg,
   ImageDashboardBgWebp,
   IconCross,
+  IconDown,
+  IconOptionSelected,
+  IconFilter,
+  IconSort,
+  IconDropdown
 };
 
 export default images;
