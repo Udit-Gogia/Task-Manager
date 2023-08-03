@@ -52,33 +52,9 @@ router.get("/tasks", auth, async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .send({ err, msg: "Error while loading tasks", code: "taskErr" });
+      .send({ msg: "Error while loading tasks", code: "taskErr" });
   }
 });
-
-// router.get("/tasks", auth, async (req, res) => {
-//   const match = {};
-//   const sort = {};
-
-//   console.log(req.query);
-
-//   if (req.query.completed) {
-//     return (match.completed = req.query.completed == "1");
-//   }
-
-//   try {
-//     await req.user.populate({
-//       path: "tasks",
-//       match,
-//       options: {
-//         limit: req.query.limit,
-//         skip: req.query.skip,
-//         sort,
-//       },
-//     });
-//     res.send(req.user.tasks);
-//   } catch (err) {}
-// });
 
 router.get("/task/:_id", auth, async (req, res) => {
   const task = await Task.findOne({

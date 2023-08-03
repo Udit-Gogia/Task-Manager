@@ -32,3 +32,19 @@ export async function updateUserData(userData) {
 
   console.log(result);
 }
+
+export async function deleteUserProfile() {
+  const response = await fetch("/user/me", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+
+  const result = await response.json()
+  console.log(result);
+
+  return result;
+}

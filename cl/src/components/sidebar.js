@@ -26,12 +26,12 @@ export default function Sidebar({ activePage }) {
       navigate: "/dashboard/profile",
       selectedIcon: images.IconUser,
     },
-    {
-      title: "Chat",
-      icon: images.IconMsgSelected,
-      navigate: "/dashboard",
-      selectedIcon: images.IconChat,
-    },
+    // {
+    //   title: "Chat",
+    //   icon: images.IconMsgSelected,
+    //   navigate: "/dashboard",
+    //   selectedIcon: images.IconChat,
+    // },
   ];
   return (
     <div
@@ -57,10 +57,9 @@ export default function Sidebar({ activePage }) {
             return (
               <button
                 onClick={() => router.push(option.navigate)}
-                className={`${
-                  activePage === option.title &&
+                className={`${activePage === option.title &&
                   "bg-primaryBackground text-primaryBlack"
-                } flex gap-2 p-2 text-primaryBackground rounded-md items-center tracking-wide hover:cursor-pointer transition-all one`}
+                  } flex gap-2 p-2 text-primaryBackground rounded-md items-center tracking-wide hover:cursor-pointer transition-all one`}
                 key={index}
               >
                 <Image

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
@@ -15,10 +15,13 @@ const LO = Lilita_One({
 
 export default function Home() {
   const router = useRouter();
-  const [gif, setGif] = useState(images.GIFLogo);
-  const [cursorLoc, setCursorLoc] = useState({});
 
-  Cookies.get("token") && router.push("/dashboard");
+  useEffect(() => {
+    Cookies.get("token") && router.push("/dashboard");
+
+    return () => { }
+  }, [])
+
 
   return (
     <AnimatePresence mode="wait">

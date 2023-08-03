@@ -1,16 +1,20 @@
 "use client";
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/sidebar";
-import { getTasks, createTask, searchTask } from "@/scripts/task";
+import Sidebar from "../../components/sidebar";
+import { getTasks, createTask, searchTask } from "../../scripts/task";
 import { Dialog, Transition, Menu, Listbox } from "@headlessui/react";
-import images from "@/assets/icons";
+import images from "../../assets/icons"
 import Image from "next/image";
 import Cookies from "js-cookie";
 import ShowTasks from "./components/showTasks";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
 
 const TaskStatusOption = ({ taskStatus, setTaskStatus }) => {
   return (
@@ -222,7 +226,7 @@ const TaskCreation = ({
                   >
                     <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
                     <span className="absolute inset-0 w-full h-full bg-primaryBackground border-2 border-black group-hover:bg-black rounded-md"></span>
-                    <span className="relative text-black group-hover:text-primaryBackground rounded-md">
+                    <span className="relative text-primaryBlack group-hover:text-primaryBackground rounded-md">
                       Create
                     </span>
                   </button>
@@ -473,6 +477,11 @@ export default function Dashboard() {
       clearTimeout(debounce);
     };
   }, [query, sortMethod, filterTasks]);
+
+  const handleDeleteTask = (taskId) => {
+    setTasks(tasks.filter((task) => task._id !== taskId));
+  };
+
   return (
     <div className="bg-primaryBackground h-screen w-screen flex overflow-x-hidden p-2">
       <Sidebar activePage={"Dashboard"} />
@@ -602,12 +611,12 @@ export default function Dashboard() {
               </section>
 
               <button
-                className={`${inter.className} relative inline-block px-4 py-2 font-medium  group rounded-md text-lg min-w-max `}
+                className={`${inter.variable} relative inline-block px-4 py-2 font-medium  group rounded-md text-lg min-w-max `}
                 onClick={() => setModalOpen(true)}
               >
                 <span className="absolute inset-0 w-full h-full transition duration-200 ease-out transform translate-x-1 translate-y-1 bg-black group-hover:-translate-x-0 group-hover:-translate-y-0 rounded-md"></span>
                 <span className="absolute inset-0 w-full h-full bg-primaryYellow border-2 border-black group-hover:bg-black rounded-md"></span>
-                <span className="relative text-black group-hover:text-primaryYellow rounded-md">
+                <span className="relative text-primaryBlack group-hover:text-primaryYellow rounded-md">
                   Add New Task
                 </span>
               </button>
@@ -623,7 +632,46 @@ export default function Dashboard() {
               setTasks={setTasks}
             />
 
-            <ShowTasks tasks={tasks} />
+            <div className="flex flex-col gap-8 my-4">
+              {Cookies.get("token") &&
+                tasks.map((task, index) => {
+
+                  return (
+                    <ShowTasks key={index} task={task} onDelete={handleDeleteTask} />
+                    // <div
+                    //   key={index}
+                    //   className={`rounded-lg flex flex-col  text-primaryBlack bg-primaryBackground `}
+                    // >
+                    //   <section className="p-2 px-6 bg-secondaryBlue font-semibold text-primaryBlack flex items-center w-full justify-between rounded-tr-md rounded-tl-md">
+                    //     <span>{getDate(task?.createdAt)}</span>
+                    //     <span>{task?.status}</span>
+                    //   </section>
+
+                    //   <section className="border-2 border-secondaryBlue border-t-0 p-4 flex flex-col gap-4 rounded-br-md rounded-bl-md">
+                    //     <section className="flex justify-between items-center">
+                    //       <h1 className="font-bold tracking-wide text-3xl first-letter:capitalize ">
+                    //         {task.title}
+
+                    //       </h1>
+
+                    //       <section className="flex items-center">
+                    //         <Dropdown task={task} setTasks={setTasks} />
+                    //       </section>
+
+
+                    //       {/* <span className="text-primaryBlack opacity-60">{getDate(task?.createdAt)}</span> */}
+                    //     </section>
+
+                    //     <pre className={`${inter.className} whitespace-normal`}>{task.description}</pre>
+
+                    //   </section>
+
+                    // </div>
+                  );
+                })}
+            </div>
+
+            {/* <ShowTasks tasks={tasks} setTasks={setTasks} /> */}
           </div>
 
           // <div className="grid grid-cols-3 gap-4">

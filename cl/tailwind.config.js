@@ -14,11 +14,11 @@ module.exports = {
       },
       colors: {
         primaryBackground: "#FFF7E9",
+        primaryBlack: "#161616",
         primaryBrown: "#9b6c46",
         primaryYellow: "#FBE2A5",
         primaryRed: "#FB5957",
         primaryBlue: "#6877e9",
-        primaryBlack: "#161616",
         primaryGreen: "#124947",
         secondaryBlue: "rgba(104, 119, 233,0.5)",
         secondaryRed: "rgba(251, 89, 87,0.5)",
@@ -31,3 +31,4 @@ module.exports = {
     },
   },
 };
+
