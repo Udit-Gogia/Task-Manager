@@ -19,8 +19,6 @@ router.get("/tasks", auth, async (req, res) => {
   const match = {};
   const sort = {};
 
-
-
   if (req.query.completed) {
     match.completed = req.query.completed === "true";
   }
@@ -29,8 +27,6 @@ router.get("/tasks", auth, async (req, res) => {
     const [toSortBy, order] = req.query.sortBy.split("-");
     sort[toSortBy] = order === "asc" ? 1 : -1;
   }
-
-  console.log(req.query)
 
   if (req.query.status) {
     console.log({ status: req.query.status })

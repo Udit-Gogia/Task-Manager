@@ -68,10 +68,10 @@ export default function Profile() {
             }) => (
               <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-8 p-8  w-1/2 mx-auto rounded-lg shadow-custom"
+                className="flex flex-col gap-8 p-8  w-1/2 mx-auto rounded-lg bg-secondaryBlue"
               >
-                <label className="border-2 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
-                  <section className="flex gap-2 items-center">
+                <label className="bg-primaryBackground border-neutral-200 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
+                  <section className="flex gap-2 items-center ">
                     <Image
                       src={images.IconUser}
                       alt="icon-name"
@@ -91,7 +91,7 @@ export default function Profile() {
                     className="p-2 focus:outline-none text-primaryBlack bg-primaryBackground text-lg w-full"
                   />
                 </label>
-                <label className="border-2 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
+                <label className="bg-primaryBackground border-neutral-200 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
                   <section className="flex gap-2 items-center">
                     <Image
                       src={images.IconEmail}
@@ -117,7 +117,7 @@ export default function Profile() {
                     {errors.email && touched.email && errors.email}
                   </p>
                 )}
-                <label className="border-2 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
+                <label className="bg-primaryBackground p-2 border-neutral-200 p-2 gap-4 rounded-md flex items-center focus-within:border-primaryBlue transition-all">
                   <section className="flex gap-2 items-center">
                     <Image
                       src={images.IconPassword}
@@ -142,7 +142,7 @@ export default function Profile() {
 
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBackground transition duration-200 bg-primaryBlack rounded-lg hover:bg-primaryBlue focus:shadow-outline focus:outline-none w-full font-semibold my-4"
+                  className="inline-flex items-center justify-center h-12 px-6 tracking-wide text-primaryBackground transition duration-200 bg-primaryBlack rounded-lg hover:bg-gray-800 focus:shadow-outline focus:outline-none w-full font-semibold my-4"
                 >
                   Update
                 </button>

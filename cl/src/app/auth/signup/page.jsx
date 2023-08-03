@@ -6,8 +6,9 @@ import Link from "next/link";
 import images from "@/assets/icons";
 import { signinUser } from "../../../scripts/authFunctions";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 const LO = Lilita_One({
   subsets: ["latin"],
@@ -17,6 +18,13 @@ const LO = Lilita_One({
 export default function Signup() {
   const router = useRouter();
   const [apiResMsg, setApiResMsg] = useState("");
+
+  useEffect(() => {
+    if (Cookies.get("token")) {
+      router.push("/dashboard");
+    }
+  }, []);
+
   return (
     <>
       <section className="flex h-screen cursor-almonds">
@@ -157,19 +165,19 @@ export default function Signup() {
             className={`${LO.className} text-7xl text-primaryBackground`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 1 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           >
             Signup
           </motion.h1>
         </section>
       </section>
-      <motion.div
+      {/* <motion.div
         className="slide-out"
         initial={{ scaleY: 1 }}
         animate={{ scaleY: 0 }}
         exit={{ scaleY: 0 }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-      />
+      /> */}
     </>
   );
 }

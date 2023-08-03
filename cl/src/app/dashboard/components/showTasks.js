@@ -8,8 +8,6 @@ import { useState } from "react";
 
 const inter = Inter({ subsets: ['latin'] })
 
-
-
 export const getDate = (date) => {
   const dateObject = new Date(date);
 

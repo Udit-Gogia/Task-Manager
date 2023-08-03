@@ -2,7 +2,6 @@ import Cookies from "js-cookie";
 const token = Cookies.get("token");
 
 export async function getUserData() {
-  // const token = Cookies.get("token");
   const response = await fetch("/users/me", {
     method: "GET",
     headers: {

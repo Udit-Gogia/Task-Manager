@@ -9,7 +9,7 @@ router.get("/users/me", auth, (req, res) => {
 });
 
 router.post("/user/login", async (req, res) => {
-  console.log("entered /user/login", req.body);
+
   try {
     const user = await User.findByCredentials(
       req.body.email,

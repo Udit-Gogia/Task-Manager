@@ -105,7 +105,6 @@ const TaskCreation = ({
   setTaskStatus,
   setTasks,
 }) => {
-  modalOpen && console.log("opening modal")
   return (
     <Transition appear show={modalOpen} as={Fragment} >
       <Dialog
@@ -138,7 +137,7 @@ const TaskCreation = ({
             >
               <Dialog.Panel
 
-                className={`w-full max-w-fit transform rounded-2xl bg-primaryBackground  p-8 text-left align-middle shadow-xl transition-all`}
+                className={`w-full max-w-fit transform rounded-2xl bg-primaryBackground p-8 text-left align-middle shadow-xl transition-all`}
               >
                 <form
                   className="flex flex-col gap-8"
@@ -462,9 +461,9 @@ export default function Dashboard() {
     if (!Cookies.get("token")) {
       router.push("/");
     }
-
     (async () => {
-      const res = await getTasks({ createdAt: sortMethod, status: filterTasks });
+      const res = await getTasks({ createdAt: sortMethod, status: filterTasks, token: Cookies.get("token") });
+
 
       setTasks(res);
     })();
@@ -487,7 +486,7 @@ export default function Dashboard() {
       <Sidebar activePage={"Dashboard"} />
 
       <section className="w-full mx-2 flex flex-col">
-        {tasks?.length == 0 ? (
+        {tasks.length == 0 ? (
           <div className=" flex h-full justify-between items-center rounded-lg gap-4">
             <section className="bg-secondaryRed flex flex-col jusitfy-center items-center p-8 gap-4 rounded-lg self-baseline">
               <button
@@ -633,40 +632,12 @@ export default function Dashboard() {
             />
 
             <div className="flex flex-col gap-8 my-4">
-              {Cookies.get("token") &&
+              {tasks.length !== undefined &&
                 tasks.map((task, index) => {
 
                   return (
                     <ShowTasks key={index} task={task} onDelete={handleDeleteTask} />
-                    // <div
-                    //   key={index}
-                    //   className={`rounded-lg flex flex-col  text-primaryBlack bg-primaryBackground `}
-                    // >
-                    //   <section className="p-2 px-6 bg-secondaryBlue font-semibold text-primaryBlack flex items-center w-full justify-between rounded-tr-md rounded-tl-md">
-                    //     <span>{getDate(task?.createdAt)}</span>
-                    //     <span>{task?.status}</span>
-                    //   </section>
 
-                    //   <section className="border-2 border-secondaryBlue border-t-0 p-4 flex flex-col gap-4 rounded-br-md rounded-bl-md">
-                    //     <section className="flex justify-between items-center">
-                    //       <h1 className="font-bold tracking-wide text-3xl first-letter:capitalize ">
-                    //         {task.title}
-
-                    //       </h1>
-
-                    //       <section className="flex items-center">
-                    //         <Dropdown task={task} setTasks={setTasks} />
-                    //       </section>
-
-
-                    //       {/* <span className="text-primaryBlack opacity-60">{getDate(task?.createdAt)}</span> */}
-                    //     </section>
-
-                    //     <pre className={`${inter.className} whitespace-normal`}>{task.description}</pre>
-
-                    //   </section>
-
-                    // </div>
                   );
                 })}
             </div>

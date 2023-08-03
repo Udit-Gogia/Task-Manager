@@ -2,8 +2,7 @@ import Cookies from "js-cookie";
 
 const token = Cookies.get("token");
 
-export async function getTasks({ createdAt = "asc", status = "" }) {
-
+export async function getTasks({ createdAt = "asc", status = "", token }) {
 
   const response = await fetch(`/tasks?sortBy=createdAt-${createdAt}${status !== "" ? `&status=${status}` : ""}`, {
     method: "GET",
@@ -12,7 +11,7 @@ export async function getTasks({ createdAt = "asc", status = "" }) {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response)
+
 
   if (!response?.ok) {
 

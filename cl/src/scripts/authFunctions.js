@@ -5,7 +5,7 @@ export function saveToLS(property, value) {
 }
 
 export function biteCookie(key, value) {
-  return Cookies.set(key, `${value}`, { expires: 7 });
+  Cookies.set(key, `${value}`, { expires: 7 });
 }
 
 export async function loginUser(userData, setErrMessage) {
@@ -30,6 +30,8 @@ export async function loginUser(userData, setErrMessage) {
   } else {
     setErrMessage("");
   }
+
+
 
   return result;
 }
